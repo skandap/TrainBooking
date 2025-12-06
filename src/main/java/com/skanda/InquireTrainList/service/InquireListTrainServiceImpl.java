@@ -6,6 +6,7 @@ import com.skanda.util.entity.TrainEntity;
 import com.skanda.util.repository.TrainRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class InquireListTrainServiceImpl implements InquireListTrainService {
     public final InquireListTrainMapper inquireTrainMapper;
 
     @Override
-    public List<InquireListTrainResponse> fetchTrainList(String sourceStation, String destinationStation, Double minPrice, Double maxPrice) {
-        List<TrainEntity> entity = trainRepository.findAll();
+    public List<InquireListTrainResponse> fetchTrainList(String sourceStation, String destinationStation, Double minPrice, Double maxPrice, Pageable pageable) {
+        List<TrainEntity> entity = trainRepository.findAll(pageable).getContent();
         List<InquireListTrainResponse> inquireTrainResponses= inquireTrainMapper.toResponse(entity);
         return inquireTrainResponses.stream().filter(train->sourceStation==null||train.getSourceStation().equalsIgnoreCase(sourceStation))
                 .filter(train-> destinationStation==null||train.getDestinationStation().equalsIgnoreCase(destinationStation))
